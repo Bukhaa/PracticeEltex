@@ -14,13 +14,6 @@
 #define write_ 1
 #define SEM_NAME "semaphore"
 
-union semun{
-    int val;
-    struct semid_ds *buf;
-    unsigned short *array;
-    struct seminfo *__buf;
-};
-
 int main(int argc, char* argv[]) {
     int fd[2];
     pid_t pid;
