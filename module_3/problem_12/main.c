@@ -22,7 +22,7 @@ void handle_sigint(int sig) {
 
 void find_min_max(int *data, int count, int *min, int *max) {
 	
-	if(count == 1) {*min = data[1]; *max = data[1];}
+    if(count == 1) {*min = data[1]; *max = data[1];}
     for (int i = 1; i < count + 1; i++) {
         if (data[i] < *min) {
             *min = data[i];
@@ -71,7 +71,7 @@ int main() {
     
     struct sembuf lock_res = {0,-1,0};
     struct sembuf rel_res[2] = {{0,0,0},
-							   {0,1,0}};
+				{0,1,0}};
     union semun arg;
     arg.val = 1;
 
@@ -91,58 +91,58 @@ int main() {
     if (pid == 0) { 
         while (chek) {
 			
-			if((semop(semid, &lock_res, 1)) == -1){
-				perror("Lock failed!\n");
-            	exit(EXIT_FAILURE);
+	    if((semop(semid, &lock_res, 1)) == -1){
+	        perror("Lock failed!\n");
+                exit(EXIT_FAILURE);
             }
             
             int count = shm_ptr[0]; 
             int min = INT_MAX;
-			int max = INT_MIN;
+	    int max = INT_MIN;
             
             find_min_max(shm_ptr, count, &min, &max);
             shm_ptr[count + 1] = min;
             shm_ptr[count + 2] = max;
 			
-			if((semop(semid, rel_res, 2)) == -1){
+	    if((semop(semid, rel_res, 2)) == -1){
                 perror("Unlock failed!\n");
                 exit(EXIT_FAILURE);
             }
 			
-			sleep(1);
+	    sleep(1);
         } 
 		
         exit(EXIT_SUCCESS);
     } else { 
 	
-		int sets_count = 0;
+	int sets_count = 0;
 	
         while (chek) {
 			
-			if((semop(semid, &lock_res, 1)) == -1){
-				perror("Lock failed!\n");
+	   if((semop(semid, &lock_res, 1)) == -1){
+		perror("Lock failed!\n");
             	exit(EXIT_FAILURE);
             }
 			
-			int count = rand() % MAX_NUMBERS + 1;
+	    int count = rand() % MAX_NUMBERS + 1;
             shm_ptr[0] = count; 
 			
-			printf("Записываем %d случайных чисел: ", count);
-			for (int i = 0; i < count; i++) {
-				shm_ptr[i + 1] = rand() % 100; 
-				printf("%d ", shm_ptr[i + 1]);
-			}
-			printf("\n");
+	    printf("Записываем %d случайных чисел: ", count);
+	    for (int i = 0; i < count; i++) {
+		shm_ptr[i + 1] = rand() % 100; 
+		printf("%d ", shm_ptr[i + 1]);
+	    }
+	    printf("\n");
 			
-			if((semop(semid, rel_res, 2)) == -1){
+	   if((semop(semid, rel_res, 2)) == -1){
                 perror("Unlock failed!\n");
                 exit(EXIT_FAILURE);
             }
             
-			sleep(1);
+	   sleep(1);
 			
-			if((semop(semid, &lock_res, 1)) == -1){
-				perror("Lock failed!\n");
+	    if((semop(semid, &lock_res, 1)) == -1){
+		perror("Lock failed!\n");
             	exit(EXIT_FAILURE);
             }
 			
@@ -150,21 +150,21 @@ int main() {
 
             sets_count++; 
 			
-			if((semop(semid, rel_res, 2)) == -1){
+	    if((semop(semid, rel_res, 2)) == -1){
                 perror("Unlock failed!\n");
                 exit(EXIT_FAILURE);
             }
-			sleep(1); 
+	    sleep(1); 
         }
 		
-		printf("Количество обработанных наборов: %d\n", sets_count);
+	   printf("Количество обработанных наборов: %d\n", sets_count);
     }
 	
 	if(shmdt(shm_ptr) == -10){
 		perror("shmdt failed!\n");
 		exit(EXIT_FAILURE);
 	}
-    if(shmctl(shmid, IPC_RMID, NULL) == -1){
+        if(shmctl(shmid, IPC_RMID, NULL) == -1){
 		perror("shmctl failed!\n");
 		exit(EXIT_FAILURE);
 	}
