@@ -42,8 +42,8 @@ union semun{
 
 int main() {
 	
-	int shmid, num, semid;
-	key_t key;
+    int shmid, num, semid;
+    key_t key;
 	
     srand(time(NULL));
 
