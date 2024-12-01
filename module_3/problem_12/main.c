@@ -160,7 +160,7 @@ int main() {
 	   printf("Количество обработанных наборов: %d\n", sets_count);
     }
 	
-	if(shmdt(shm_ptr) == -10){
+	if(shmdt(shm_ptr) == -1){
 		perror("shmdt failed!\n");
 		exit(EXIT_FAILURE);
 	}
