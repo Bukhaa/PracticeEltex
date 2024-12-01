@@ -159,7 +159,10 @@ int main() {
 		
 	   printf("Количество обработанных наборов: %d\n", sets_count);
     }
-	
+	if(semctl(semid, 0, IPC_RMID) < 0){
+		perror("Ошибка удаления семафора!\n");
+		exit(EXIT_FAILURE);
+    	}
 	if(shmdt(shm_ptr) == -1){
 		perror("shmdt failed!\n");
 		exit(EXIT_FAILURE);
