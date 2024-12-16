@@ -47,66 +47,65 @@ int main(int argc, char* argv[]) {
     pid = fork();
     if (pid == -1) {
         perror("Ошибка fork");
-		close(fd[read_]);
-		close(fd[write_]);
+	close(fd[read_]);
+	close(fd[write_]);
         exit(EXIT_FAILURE);
     } else if (0 == pid) { 
         close(fd[write_]);
     
-		FILE *fp = fopen(FILENAME, "r");
+	FILE *fp = fopen(FILENAME, "r");
         if (fp == NULL) {
             printf("Ошибка открытия файла");
-			close(fd[read_]);
+	    close(fd[read_]);
             exit(EXIT_FAILURE);
         }
     
         for (i = 0; i < count_number; ++i) {
             
-			while (!file_access)
-                pause();
+	    while (!file_access)
+	        pause();
 			
-			int res = read(fd[read_], &num, sizeof(int));
-			if(res < 0){
-				perror("read");
-				close(fd[read_]);
-				exit(EXIT_FAILURE);
-			}
+	int res = read(fd[read_], &num, sizeof(int));
+	if(res < 0){
+	    perror("read");
+	    close(fd[read_]);
+	    exit(EXIT_FAILURE);
+	}
           
-			fscanf(fp,"%d\n", &num);
-			printf("%d\n",num);
+	    fscanf(fp,"%d\n", &num);
+	    printf("%d\n",num);
         }
-		close(fd[read_]);
-		fclose(fp);
+	close(fd[read_]);
+	fclose(fp);
         exit(EXIT_SUCCESS);
 
     } else { 
         close(fd[read_]);
-		srand(time(NULL));
+	srand(time(NULL));
     
         FILE *fp = fopen(FILENAME, "w");
         if (fp == NULL) {
             printf("Ошибка открытия файла");
-			close(fd[write_]);
+	    close(fd[write_]);
             exit(EXIT_FAILURE);
         }
 
         for (i = 0; i < count_number; ++i) {
 			
             kill(pid, SIGUSR1); 
-            int number = rand() % 100;
-			
+            int number = rand() % 100;	
             int res = write(fd[write_], &number, sizeof(int));
-			if(res < 0){
-				perror("write");
-				close(fd[write_]);
-				exit(EXIT_FAILURE);
-			}
+	    if(res < 0){
+	        perror("write");
+		close(fd[write_]);
+		exit(EXIT_FAILURE);
+	    }
 			
-			fprintf(fp, "%d\n", number);
+	    fprintf(fp, "%d\n", number);
             kill(pid, SIGUSR2); 
             sleep(1); 
         }
-		close(fd[write_]);
+	close(fd[write_]);
         fclose(fp);
         wait(NULL);
     }
