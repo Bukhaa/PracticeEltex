@@ -52,6 +52,10 @@ static const struct proc_ops proc_fops = {
 static void create_new_proc_entry(void) { 
     proc_create(PROC_NAME, 0666, NULL, &proc_fops);
     msg = kmalloc(MSG_SIZE * sizeof(char), GFP_KERNEL);
+    if(msg == NULL){
+       printk(KERN_ERR "error kmalloc");
+       return;
+    }
 }
 
 static int proc_init(void) {
