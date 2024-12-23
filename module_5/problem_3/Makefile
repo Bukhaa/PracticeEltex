@@ -1,4 +1,4 @@
-obj-m += probl_3.o
+obj-m += problem_3.o
 
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
