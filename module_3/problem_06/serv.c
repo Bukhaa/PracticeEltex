@@ -1,22 +1,18 @@
-#include <stdio.h>
+ #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
 #include <unistd.h>
 
-#define SERVER_KEY_PATHNAME "q_file"
+#define SERVER_KEY_PATHNAME "./read.me"
 #define PROJECT_ID 'a'
 #define QUEUE_PERMISSIONS 0660
 #define BUF_SIZE 200
 
-struct message_text {
-    char buf[BUF_SIZE];
-};
-
 struct message {
     long message_type;
-    struct message_text message_text;
+    char message_text[BUF_SIZE];
 };
 
 int main(int argc, char **argv) {
@@ -39,31 +35,31 @@ int main(int argc, char **argv) {
     printf("Server start work\n");
 
     while (1) {
-        if (msgrcv(qid, &return_message, sizeof(struct message_text), 1, 0) == -1) {
+        if (msgrcv(qid, &return_message, sizeof(message.message_text), 1, 0) == -1) {
             perror("msgrcv");
             exit(EXIT_FAILURE);
         }
 
-        if (strcmp(return_message.message_text.buf, "exit") == 0)
+        if (strcmp(return_message.message_text, "exit") == 0)
 		break;
         
 
-        printf("Message received from client: %s\n\n", return_message.message_text.buf);
+        printf("Message received from client: %s\n\n", return_message.message_text);
  
         printf("Please type a message: ");
-        fgets(message.message_text.buf, BUF_SIZE, stdin);
+        fgets(message.message_text, BUF_SIZE, stdin);
 
-	int length = strlen(message.message_text.buf);
-        if (message.message_text.buf[length - 1] == '\n')
-            message.message_text.buf[length - 1] = '\0';
+	int length = strlen(message.message_text);
+        if (message.message_text[length - 1] == '\n')
+            message.message_text[length - 1] = '\0';
 
-        if (strcmp(message.message_text.buf, "exit") == 0) {
-            msgsnd(qid, &message, sizeof(struct message_text), 0);
+        if (strcmp(message.message_text, "exit") == 0) {
+            msgsnd(qid, &message, sizeof(message.message_text), 0);
             break;
         }
 
 
-        if (msgsnd(qid, &message, sizeof(struct message_text), 0) == -1) {
+        if (msgsnd(qid, &message, sizeof(message.message_text), 0) == -1) {
             perror("msgsnd");
             exit(EXIT_FAILURE);
         }
