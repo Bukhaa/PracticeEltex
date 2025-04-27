@@ -1,2 +1,2 @@
-# PracticeEltex 2024/2025
+# Practice Eltex 2024/2025
 
